@@ -2,7 +2,9 @@
 
 Publishes versioned build artifacts and documentation for a gradle project.
 
-The project's [`publish`](https://docs.gradle.org/current/userguide/publishing_maven.html) task is invoked to build and push artifacts using the [`reckon`](https://github.com/ajoberstar/reckon) plugin for versioning.
+The project's packaging task is invoked to build (and potentially push) artifacts using the [`reckon`](https://github.com/ajoberstar/reckon) plugin for versioning.
+
+The project's documentation task is invoked to generate documentation that is then pushed to Github Pages.
 
 ## Usage
 
@@ -31,6 +33,7 @@ Documentation from the project's documentation task is pushed to Github Pages.
 | ----------------- | --------------------------------------------------------------------------- | -------------------- |
 | java-version      | Java version to run against                                                 |                      |
 | java-distribution | Java distribution to run against                                            | zulu                 |
+| package-task      | Artifact generation task                                                    | publish                     |
 | docs-task         | Documentation generation task                                               | javadoc              |
 | docs-dir          | Documentation output directory                                              | ./build/docs/javadoc |
 | token             | Token for Github maven repository read/write and pushing to gh-pages branch |                      |

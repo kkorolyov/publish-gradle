@@ -1,12 +1,12 @@
 name: Publish Gradle
 description: |
   Publishes versioned build artifacts and documentation for a gradle project.
-  The project's 'publish' task is invoked to build and push artifacts using the 'reckon' plugin for versioning.
+  The project's packaging task is invoked to build (and potentially push) artifacts using the 'reckon' plugin for versioning.
+  The project's documentation task is invoked to generate documentation that is then pushed to Github Pages.
   By default, a minor version is tagged and released.
   If the last commit message contains any of the terms [MAJOR, BREAKING], a major version is released.
   If the last commit message contains any of the terms [PATCH, HOTFIX], a patch version is released.
   If the last commit message contains any of the terms [NOCHANGE], no version is released.
-  Documentation from the project's documentation task is pushed to Github Pages.
 
 inputs:
   java-version:
@@ -16,6 +16,10 @@ inputs:
     description: Java distribution to run against
     required: true
     default: zulu
+  package-task:
+    description: Artifact generation task
+    required: true
+    default: publish
   docs-task:
     description: Documentation generation task
     required: true
@@ -53,7 +57,7 @@ runs:
             ;;
         esac
 
-        task="publish reckonTagPush -Preckon.stage=final -Preckon.scope=$scope"
+        task="${{ inputs.package-task }} reckonTagPush -Preckon.stage=final -Preckon.scope=$scope"
         case "$msg" in
           *NOCHANGE*)
             task=build
