@@ -1,0 +1,71 @@
+name: Publish Gradle
+description: |
+  Publishes versioned build artifacts and documentation for a gradle project.
+  The project's 'publish' task is invoked to build and push artifacts using the 'reckon' plugin for versioning.
+  By default, a minor version is tagged and released.
+  If the last commit message contains any of the terms [MAJOR, BREAKING], a major version is released.
+  If the last commit message contains any of the terms [PATCH, HOTFIX], a patch version is released.
+  If the last commit message contains any of the terms [NOCHANGE], no version is released.
+  Documentation from the project's '$docs-task' task is pushed to Github Pages.
+
+inputs:
+  java-version:
+    description: Java version to run against
+    required: true
+  java-distribution:
+    description: Java distribution to run against
+    required: true
+    default: zulu
+  docs-task:
+    description: Documentation generation task
+    required: true
+    default: javadoc
+  docs-dir:
+    description: Documentation output directory
+    required: true
+    default: ./build/docs/javadoc
+  token:
+    description: Token for Github maven repository read/write and pushing to gh-pages branch
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: java
+      uses: actions/setup-java@v2
+      with:
+        java-version: ${{ inputs.java-version }}
+        cache: gradle
+        distribution: zulu
+
+    - name: build
+      shell: bash
+      run: |
+        msg="${{ github.event.commits[0].message }}"
+
+        scope=minor
+        case "$msg" in
+          *MAJOR* | *BREAKING*)
+            scope=major
+            ;;
+          *PATCH* | *HOTFIX*)
+            scope=patch
+            ;;
+        esac
+
+        task="publish reckonTagPush -Preckon.stage=final -Preckon.scope=$scope"
+        case "$msg" in
+          *NOCHANGE*)
+            task=build
+            ;;
+        esac
+
+        ./gradlew ${{ inputs.docs-task }} $task --no-daemon 
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+
+    - name: pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        publish_dir: ./build/docs/javadoc
+        github_token: ${{ inputs.token }}
