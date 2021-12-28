@@ -10,11 +10,11 @@ The project's documentation task is invoked to generate documentation that is th
 
 ```yaml
 steps:
-	- name: publish-gradle
-		uses: kkorolyov/publish-gradle@0.1.0
-		with:
-			java-version: ${{ matrix.version }}
-			token: ${{ secrets.GITHUB_TOKEN }}
+  - name: publish-gradle
+    uses: kkorolyov/publish-gradle@0.2.0
+    with:
+      java-version: ${{ matrix.version }}
+      token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Customization
@@ -33,7 +33,7 @@ Documentation from the project's documentation task is pushed to Github Pages.
 | ----------------- | --------------------------------------------------------------------------- | -------------------- |
 | java-version      | Java version to run against                                                 |                      |
 | java-distribution | Java distribution to run against                                            | zulu                 |
-| package-task      | Artifact generation task                                                    | publish                     |
+| package-task      | Artifact generation task                                                    | publish              |
 | docs-task         | Documentation generation task                                               | javadoc              |
 | docs-dir          | Documentation output directory                                              | ./build/docs/javadoc |
 | token             | Token for Github maven repository read/write and pushing to gh-pages branch |                      |
