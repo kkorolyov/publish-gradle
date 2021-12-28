@@ -4,6 +4,17 @@ Publishes versioned build artifacts and documentation for a gradle project.
 
 The project's [`publish`](https://docs.gradle.org/current/userguide/publishing_maven.html) task is invoked to build and push artifacts using the [`reckon`](https://github.com/ajoberstar/reckon) plugin for versioning.
 
+## Usage
+
+```yaml
+steps:
+	- name: publish-gradle
+		uses: kkorolyov/publish-gradle@0.1.0
+		with:
+			java-version: ${{ matrix.version }}
+			token: ${{ secrets.GITHUB_TOKEN }}
+```
+
 ## Customization
 
 By default, a minor version is tagged and released.
