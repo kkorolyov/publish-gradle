@@ -71,5 +71,5 @@ runs:
     - id: pages
       uses: peaceiris/actions-gh-pages@v3
       with:
-        publish_dir: ./build/docs/javadoc
+        publish_dir: ${{ inputs.docs-dir }}
         github_token: ${{ inputs.token }}
