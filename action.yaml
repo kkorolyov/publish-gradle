@@ -22,6 +22,9 @@ inputs:
     description: Artifact publishing task
     required: true
     default: publish
+  publish-branch:
+    description: If set, name of distinct branch on which 'publish-task' can run. Execution from other branches / PRs will only run 'build-task'.
+    required: false
   token:
     description: Token for Github maven repository read/write
     required: true
@@ -39,6 +42,8 @@ runs:
     - id: build
       shell: bash
       run: |
+        publishBranch="${{ inputs.publish-branch }}"
+        ref="${{ github.ref }}"
         msg="${{ github.event.head_commit.message }}"
 
         case "$msg" in
@@ -53,9 +58,11 @@ runs:
             ;;
         esac
 
-        if [ -n "$scope" ]; then
+        if ([ -z "$publishBranch" ] || [ "$ref" -eq "refs/heads/${publishBranch}" ]) && [ -n "$scope" ]; then
+          echo "Running publish task"
           task="${{ inputs.publish-task }} reckonTagPush -Preckon.stage=final -Preckon.scope=$scope"
         else
+          echo "Running build task"
           task="${{ inputs.build-task }}"
         fi
 
