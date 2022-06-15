@@ -1,17 +1,15 @@
 # publish-gradle
 
-Publishes versioned build artifacts and documentation for a gradle project.
+Builds and publishes versioned build artifacts for a gradle project.
 
-The project's packaging task is invoked to build (and potentially push) artifacts using the [`reckon`](https://github.com/ajoberstar/reckon) plugin for versioning.
-
-The project's documentation task is invoked to generate documentation that is then pushed to Github Pages.
+Uses the [`reckon` plugin](https://github.com/ajoberstar/reckon) to determine version.
 
 ## Usage
 
 ```yaml
 steps:
   - name: publish-gradle
-    uses: kkorolyov/publish-gradle@0.2.0
+    uses: kkorolyov/publish-gradle@0.3.0
     with:
       java-version: ${{ matrix.version }}
       token: ${{ secrets.GITHUB_TOKEN }}
@@ -19,21 +17,18 @@ steps:
 
 ## Customization
 
-By default, a minor version is tagged and released.
+By default, simply builds the project.
 
-If the last commit message contains any of the terms `[MAJOR, BREAKING]`, a major version is released.
+If the last commit message contains any of the terms `[MAJOR, BREAKING]`, a major version is published.  
+If the last commit message contains any of the terms `[MINOR]`, a minor version is published.  
+If the last commit message contains any of the terms `[PATCH, HOTFIX]`, a patch version is published.
 
-If the last commit message contains any of the terms `[PATCH, HOTFIX]`, a patch version is released.
+### List of action options - all are required:
 
-If the last commit message contains any of the terms `[NOCHANGE]`, no version is released.
-
-Documentation from the project's documentation task is pushed to Github Pages.
-
-| Input             | Usage                                                                       | Default              |
-| ----------------- | --------------------------------------------------------------------------- | -------------------- |
-| java-version      | Java version to run against                                                 |                      |
-| java-distribution | Java distribution to run against                                            | zulu                 |
-| package-task      | Artifact generation task                                                    | publish              |
-| docs-task         | Documentation generation task                                               | javadoc              |
-| docs-dir          | Documentation output directory                                              | ./build/docs/javadoc |
-| token             | Token for Github maven repository read/write and pushing to gh-pages branch |                      |
+| Input             | Usage                                                                                                            | Default |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------- | ------- |
+| java-version      | Java version to run against                                                                                      |         |
+| java-distribution | Java distribution to run against ([more options](https://github.com/actions/setup-java#supported-distributions)) | temurin |
+| build-task        | Basic build task                                                                                                 | build   |
+| publish-task      | Artifact publishing task                                                                                         | publish |
+| token             | Token for Github maven repository read/write                                                                     |         |

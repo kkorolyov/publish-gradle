@@ -1,12 +1,10 @@
 name: Publish Gradle
 description: |
-  Publishes versioned build artifacts and documentation for a gradle project.
-  The project's packaging task is invoked to build (and potentially push) artifacts using the 'reckon' plugin for versioning.
-  The project's documentation task is invoked to generate documentation that is then pushed to Github Pages.
-  By default, a minor version is tagged and released.
-  If the last commit message contains any of the terms [MAJOR, BREAKING], a major version is released.
-  If the last commit message contains any of the terms [PATCH, HOTFIX], a patch version is released.
-  If the last commit message contains any of the terms [NOCHANGE], no version is released.
+  Builds and publishes versioned build artifacts for a gradle project.
+  Uses the 'reckon' plugin (https://github.com/ajoberstar/reckon) to determine version.
+  By default, simply builds the project.
+  If the last commit message contains any of the terms [MAJOR, BREAKING], a new major version is published.
+  If the last commit message contains any of the terms [PATCH, HOTFIX], a new patch version is published.
 
 inputs:
   java-version:
@@ -15,61 +13,52 @@ inputs:
   java-distribution:
     description: Java distribution to run against
     required: true
-    default: zulu
-  package-task:
-    description: Artifact generation task
+    default: temurin
+  build-task:
+    description: Basic build task
+    required: true
+    default: build
+  publish-task:
+    description: Artifact publishing task
     required: true
     default: publish
-  docs-task:
-    description: Documentation generation task
-    required: true
-    default: javadoc
-  docs-dir:
-    description: Documentation output directory
-    required: true
-    default: ./build/docs/javadoc
   token:
-    description: Token for Github maven repository read/write and pushing to gh-pages branch
+    description: Token for Github maven repository read/write
     required: true
 
 runs:
   using: composite
   steps:
     - id: java
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v3
       with:
         java-version: ${{ inputs.java-version }}
         cache: gradle
-        distribution: zulu
+        distribution: ${{ inputs.java-distribution }}
 
     - id: build
       shell: bash
       run: |
         msg="${{ github.event.head_commit.message }}"
 
-        scope=minor
         case "$msg" in
           *MAJOR* | *BREAKING*)
             scope=major
+            ;;
+          *MINOR*)
+            scope=minor
             ;;
           *PATCH* | *HOTFIX*)
             scope=patch
             ;;
         esac
 
-        task="${{ inputs.package-task }} reckonTagPush -Preckon.stage=final -Preckon.scope=$scope"
-        case "$msg" in
-          *NOCHANGE*)
-            task=build
-            ;;
-        esac
+        if [ -n "$scope" ]; then
+          task="${{ inputs.publish-task }} reckonTagPush -Preckon.stage=final -Preckon.scope=$scope"
+        else
+          task="${{ inputs.build-task }}"
+        fi
 
-        ./gradlew ${{ inputs.docs-task }} $task --no-daemon 
+        ./gradlew "$task" --no-daemon
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
-
-    - id: pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        publish_dir: ${{ inputs.docs-dir }}
-        github_token: ${{ inputs.token }}
