@@ -39,6 +39,10 @@ runs:
         cache: gradle
         distribution: ${{ inputs.java-distribution }}
 
+    - id: tags
+      shell: bash
+      run: git fetch --unshallow --tags
+
     - id: build
       shell: bash
       run: |
