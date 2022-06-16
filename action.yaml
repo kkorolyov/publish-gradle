@@ -66,6 +66,6 @@ runs:
           task="${{ inputs.build-task }}"
         fi
 
-        ./gradlew "$task" --no-daemon
+        ./gradlew $task --no-daemon
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
