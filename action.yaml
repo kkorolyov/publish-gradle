@@ -58,7 +58,7 @@ runs:
             ;;
         esac
 
-        if ([ -z "$publishBranch" ] || [ "$ref" -eq "refs/heads/${publishBranch}" ]) && [ -n "$scope" ]; then
+        if ([ -z "$publishBranch" ] || [ "$ref" = "refs/heads/${publishBranch}" ]) && [ -n "$scope" ]; then
           echo "Running publish task"
           task="${{ inputs.publish-task }} reckonTagPush -Preckon.stage=final -Preckon.scope=$scope"
         else
