@@ -23,12 +23,13 @@ If the last commit message contains any of the terms `[MAJOR, BREAKING]`, a majo
 If the last commit message contains any of the terms `[MINOR]`, a minor version is published.  
 If the last commit message contains any of the terms `[PATCH, HOTFIX]`, a patch version is published.
 
-### List of action options - all are required:
+### List of action options:
 
-| Input             | Usage                                                                                                            | Default |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------- | ------- |
-| java-version      | Java version to run against                                                                                      |         |
-| java-distribution | Java distribution to run against ([more options](https://github.com/actions/setup-java#supported-distributions)) | temurin |
-| build-task        | Basic build task                                                                                                 | build   |
-| publish-task      | Artifact publishing task                                                                                         | publish |
-| token             | Token for Github maven repository read/write                                                                     |         |
+| Input             | Usage                                                                                                                            | Default |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| java-version      | Java version to run against                                                                                                      |         |
+| java-distribution | Java distribution to run against ([more options](https://github.com/actions/setup-java#supported-distributions))                 | temurin |
+| build-task        | Basic build task                                                                                                                 | build   |
+| publish-task      | Artifact publishing task                                                                                                         | publish |
+| publish-branch    | If set, name of distinct branch on which 'publish-task' can run. Execution from other branches / PRs will only run 'build-task'. |         |
+| token             | Token for Github maven repository read/write                                                                                     |         |
