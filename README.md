@@ -15,6 +15,8 @@ steps:
       token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+When `publish-task` is run, also outputs the `version` reckoned, to optionally use in subsequent workflow steps.
+
 ## Customization
 
 By default, simply builds the project.

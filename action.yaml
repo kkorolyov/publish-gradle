@@ -29,6 +29,11 @@ inputs:
     description: Token for Github maven repository read/write
     required: true
 
+outputs:
+  version:
+    description: "The reckoned version if 'publish-task' ran, else '0''"
+    value: "${{ steps.build.outputs.version }}"
+
 runs:
   using: composite
   steps:
@@ -65,11 +70,13 @@ runs:
         if ([ -z "$publishBranch" ] || [ "$ref" = "refs/heads/${publishBranch}" ]) && [ -n "$scope" ]; then
           echo "Running publish task"
           task="${{ inputs.publish-task }} reckonTagPush -Preckon.stage=final -Preckon.scope=$scope"
+          postRun='echo "::set-output name=version::$(git describe)"'
         else
           echo "Running build task"
           task="${{ inputs.build-task }}"
         fi
 
         ./gradlew $task --no-daemon
+        eval $postRun
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
