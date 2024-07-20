@@ -9,7 +9,7 @@ Uses the [`reckon` plugin](https://github.com/ajoberstar/reckon) to determine ve
 ```yaml
 steps:
   - name: publish-gradle
-    uses: kkorolyov/publish-gradle@0.3.0
+    uses: kkorolyov/publish-gradle@0.4.1
     with:
       java-version: ${{ matrix.version }}
       token: ${{ secrets.GITHUB_TOKEN }}
