@@ -38,11 +38,13 @@ runs:
   using: composite
   steps:
     - id: java
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: ${{ inputs.java-version }}
-        cache: gradle
         distribution: ${{ inputs.java-distribution }}
+
+    - id: gradle
+      uses: gradle/actions/setup-gradle@v3
 
     - id: tags
       shell: bash
@@ -76,7 +78,7 @@ runs:
           task="${{ inputs.build-task }}"
         fi
 
-        ./gradlew $task --no-daemon
+        ./gradlew $task
         eval $postRun
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
