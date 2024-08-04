@@ -44,7 +44,7 @@ runs:
         distribution: ${{ inputs.java-distribution }}
 
     - id: gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
 
     - id: tags
       shell: bash
