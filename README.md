@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+> Archived  
+> `zwaldowski/semver-release-action` is a better alternative, to decouple versioning from the build system
+
 # publish-gradle
 
 Builds and publishes versioned build artifacts for a gradle project.
